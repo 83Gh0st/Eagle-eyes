@@ -179,7 +179,7 @@ This project is licensed under the **MIT License** – Free to use, modify, and 
 ---
 
 ## **👨‍💻 Author**
-Developed by **@83Gh0st** (Arjun Sasikumar) 🔥  
+Developed by **@83Gh0st** 🔥  
 💬 **Contact:** [GitHub](https://github.com/83Gh0st)  
 
 🔥 **Star this repo if you found it useful!** ⭐  
