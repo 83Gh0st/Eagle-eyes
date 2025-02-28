@@ -1,7 +1,7 @@
 
 #    Eagle-eyes | Smart Construction Site Monitoring - PPE Detection 🏗️🦺  
 
-![Smart Construction Monitoring](https://www.zeniteq.com/blog/why-should-you-add-an-ai-chatbot-to-your-website-here-are-5-reasons)  
+![Smart Construction Monitoring](https://github.com/83Gh0st/Eagle-eyes/blob/main/predictions/Model/val_batch1_pred.jpg?raw=true)  
 
 ## **📌 Overview**  
 Eagle Eyes project is an AI-powered **Personal Protective Equipment (PPE) detection system** designed for **smart construction site monitoring**. It can detect **workers wearing or not wearing helmets (hat/no hat) and safety vests (vest/no vest)** in real-time using deep learning. The model is optimized for deployment across **multiple platforms** using:  
