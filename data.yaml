@@ -1,0 +1,13 @@
+train: /content/drive/MyDrive/yolo_training/yolov5/datasets/train
+val: /content/drive/MyDrive/yolo_training/yolov5/datasets/train
+test: /content/drive/MyDrive/yolo_training/yolov5/datasets/test 
+
+nc: 4
+names: [
+      'hat',
+      'vest',
+      'no hat',
+      'no vest'
+]
+
+

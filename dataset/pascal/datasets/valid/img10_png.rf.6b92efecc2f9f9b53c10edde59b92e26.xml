@@ -1,0 +1,40 @@
+<annotation>
+	<folder></folder>
+	<filename>img10_png.rf.6b92efecc2f9f9b53c10edde59b92e26.jpg</filename>
+	<path>img10_png.rf.6b92efecc2f9f9b53c10edde59b92e26.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>469</width>
+		<height>640</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>hat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>3</xmin>
+			<xmax>311</xmax>
+			<ymin>1</ymin>
+			<ymax>259</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>no vest</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>38</xmin>
+			<xmax>470</xmax>
+			<ymin>311</ymin>
+			<ymax>641</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,40 @@
+<annotation>
+	<folder></folder>
+	<filename>083402162-caucasian-worker-pours-sand-co_jpg.rf.2b4c1cab1184195cc005594f041ce7c6.jpg</filename>
+	<path>083402162-caucasian-worker-pours-sand-co_jpg.rf.2b4c1cab1184195cc005594f041ce7c6.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>3840</width>
+		<height>2160</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>hat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>2261</xmin>
+			<xmax>3406</xmax>
+			<ymin>336</ymin>
+			<ymax>1026</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>no vest</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>2486</xmin>
+			<xmax>3841</xmax>
+			<ymin>391</ymin>
+			<ymax>1971</ymax>
+		</bndbox>
+	</object>
+</annotation>
