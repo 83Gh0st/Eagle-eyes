@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagle Eyes - Smart PPE Detection</title>
+
+    <!-- TensorFlow.js & ONNX Runtime -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        video, canvas { border: 2px solid black; margin: 10px; }
+        #output { font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>🦺 Eagle Eyes - AI-Powered PPE Detection</h1>
+    <p>Detect Helmets and Vests in Real-Time</p>
+
+    <video id="webcam" width="640" height="480" autoplay playsinline></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <br>
+    <button onclick="startDetection()">Start Detection</button>
+    <button onclick="stopDetection()">Stop Detection</button>
+
+    <p id="output">Waiting for Detection...</p>
+
+    <script>
+        let model, video, canvas, ctx;
+        let detectionRunning = false;
+        const classNames = ["hat", "vest", "no hat", "no vest"];
+
+        async function loadModelONNX() {
+            try {
+                console.log("📢 Loading ONNX model...");
+                model = await ort.InferenceSession.create('/static/models/best.onnx');
+                console.log("✅ ONNX Model Loaded!");
+            } catch (error) {
+                console.error("❌ Error loading ONNX model:", error);
+            }
+        }
+
+        async function setupWebcam() {
+            video = document.getElementById('webcam');
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("❌ Webcam not supported in this browser.");
+                return;
+            }
+
+            try {
+                console.log("📢 Setting up webcam...");
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                console.log("✅ Webcam Access Granted!");
+            } catch (err) {
+                alert("❌ Webcam access denied. Please allow access and reload.");
+                console.error(err);
+            }
+        }
+
+        async function runDetection() {
+            if (!model) {
+                alert("❌ Model not loaded! Please refresh and try again.");
+                return;
+            }
+
+            detectionRunning = true;
+
+            async function detectFrame() {
+                if (!detectionRunning) return;
+
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                let imgTensor = tf.browser.fromPixels(video)
+                    .resizeBilinear([640, 640])
+                    .toFloat()
+                    .div(tf.scalar(255))  // Normalize pixel values
+                    .expandDims(0); // [1, 640, 640, 3]
+
+                imgTensor = imgTensor.transpose([0, 3, 1, 2]);  // Convert NHWC → NCHW
+
+                const float32Array = new Float32Array(imgTensor.dataSync());
+                const tensor = new ort.Tensor("float32", float32Array, [1, 3, 640, 640]);
+
+                try {
+                    console.log("🔍 Running ONNX inference...");
+                    const results = await model.run({ [model.inputNames[0]]: tensor });
+
+                    console.log("📢 Predictions:", results);
+                    parsePredictions(results[model.outputNames[0]].data);
+                } catch (error) {
+                    console.error("❌ Error during inference:", error);
+                }
+
+                requestAnimationFrame(detectFrame);
+            }
+
+            detectFrame();
+        }
+
+        function parsePredictions(output) {
+            if (!output || output.length === 0) {
+                console.error("❌ No valid predictions received.");
+                return;
+            }
+
+            console.log("✅ Processed Predictions:", output);
+
+            const boxes = [];
+            const scores = [];
+            const classIndices = [];
+
+            for (let i = 0; i < output.length; i += 9) {
+                const [cx, cy, w, h, confidence, class0, class1, class2, class3] = output.slice(i, i + 9);
+
+                const classScores = [class0, class1, class2, class3];
+                const maxClassScore = Math.max(...classScores);
+                const classId = classScores.indexOf(maxClassScore);
+
+                if (confidence > 0.5) {  // Confidence threshold
+                    const x = (cx - w / 2) * canvas.width / 640;
+                    const y = (cy - h / 2) * canvas.height / 640;
+                    const width = w * canvas.width / 640;
+                    const height = h * canvas.height / 640;
+
+                    boxes.push([x, y, width, height]);
+                    scores.push(confidence);
+                    classIndices.push(classId);
+                }
+            }
+
+            drawBoundingBoxes(boxes, scores, classIndices);
+        }
+
+        function drawBoundingBoxes(boxes, scores, classIndices) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < boxes.length; i++) {
+                let [x, y, width, height] = boxes[i];
+                const confidence = scores[i];
+                const classId = classIndices[i];
+                const label = classNames[classId];
+
+                // Adjust scaling for proper detection
+                x *= canvas.width / 640;
+                y *= canvas.height / 640;
+                width *= canvas.width / 640;
+                height *= canvas.height / 640;
+
+                ctx.strokeStyle = "lime";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, width, height);
+
+                // Background for better text visibility
+                ctx.fillStyle = "black";
+                ctx.fillRect(x, y - 20, ctx.measureText(label).width + 10, 20);
+
+                ctx.fillStyle = "white";
+                ctx.fillText(`${label} (${Math.round(confidence * 100)}%)`, x, y - 5);
+            }
+        }
+
+        function startDetection() {
+            detectionRunning = true;
+            runDetection();
+        }
+
+        function stopDetection() {
+            detectionRunning = false;
+            document.getElementById('output').innerText = "Detection Stopped";
+        }
+
+        // Start webcam and load model
+        setupWebcam().then(loadModelONNX);
+    </script>
+
+</body>
+</html>
+
