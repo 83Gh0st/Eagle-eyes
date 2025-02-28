@@ -76,8 +76,11 @@ The model has been evaluated on a **construction site dataset** and achieved:
 ✅ **Precision:** 92.1%  
 ✅ **Recall:** 87.5%  
 
+![precison curve](https://github.com/83Gh0st/Eagle-eyes/blob/main/predictions/Model/P_curve.png?raw=true)
+
 📈 **Graphs & Training Metrics** (Loss, Accuracy, Confusion Matrix) are available in the results folder.
 
+![confusion matrix](https://github.com/83Gh0st/Eagle-eyes/blob/main/predictions/Model/confusion_matrix.png)
 ---
 
 ## **📂 Project Structure**
