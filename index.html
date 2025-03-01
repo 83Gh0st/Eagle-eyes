@@ -37,7 +37,7 @@
         async function loadModelONNX() {
             try {
                 console.log("📢 Loading ONNX model...");
-                model = await ort.InferenceSession.create('/static/models/best.onnx');
+                model = await ort.InferenceSession.create('webapp/static/models/best.onnx');
                 console.log("✅ ONNX Model Loaded!");
             } catch (error) {
                 console.error("❌ Error loading ONNX model:", error);
